@@ -20,5 +20,8 @@
               <button class="btn btn-outline-info" type="submit">Update</button>
           </div>
       </form>
+      {% if user.is_superuser %}
+        <a class="btn btn-outline-info"  href="{% url 'admin-register'%}">Create New Admin Account</a>
+      {% endif %}
     </div>
 {% endblock content %}

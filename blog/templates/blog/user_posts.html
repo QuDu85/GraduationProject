@@ -8,10 +8,21 @@
         <div class="media-body">
           <h2 class="account-heading">{{ post.author }}</h2>
           <p class="text-secondary">{{ post.author.email }}</p>
+          {% if user.is_superuser %}
+            {% if post.author.profile.is_locked %}
+              <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'user-unban' post.author.username %}">Unban User</a>
+            {% else %}
+              <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'user-ban' post.author.username %}">Ban User</a>
+            {% endif %}
+          {% endif %}
         </div>
       </div>
     </div>
+    {% if view.kwargs.username == user.username %}
+    <h1 class="mb-3">My Posts ({{ page_obj.paginator.count }})</h1>
+    {% else %}
     <h1 class="mb-3">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+    {% endif %}
       {% endif %}
         <article class="media content-section">
           <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">

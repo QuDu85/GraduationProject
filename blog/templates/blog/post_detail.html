@@ -1,6 +1,11 @@
 {% extends "blog/base.html" %}
 {% load static %}
 {% block content %}
+{% if message %}
+<div class="alert alert-secondary" role="alert">
+  {{message}}
+</div>
+{% endif %}
 <div class="jumbotron mt-3 shadow-lg">
 <article class="media content-section shadow ">
    <a href="{{ object.author.profile.image.url }} " target="_blank"> <img src="{{ object.author.profile.image.url }}  " alt="" class="article-img rounded-circle img-thumbnail img-fluid">
@@ -9,11 +14,16 @@
       <div class="">
         <div class="d-flex justify-content-between">
         <a class="mr-2 mt-0 mb-0  text-dark" href="{% url 'user-posts' object.author.username  %}"><h3>{{ object.author }}</h3></a>
-        <small class="text-muted  text-align-right">{{ object.date_upload }}</small>
+        <small class="text-muted  text-align-right">{{ object.date_posted }}</small>
         </div>
         {% if object.author != user %}
-          <div class="form-group mt-0 pt-0 d-flex justify-content-end">          
+          <div class="form-group mt-0 pt-0 d-flex justify-content-end">
+            {% if user.is_superuser %}
             <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
+            {% else %}
+            <button  data-toggle="modal" data-target="#reportForm" class="btn btn-secondary mr-1 flex-last"><i class="fas fa-solid fa-flag"></i> Report</button>
+            <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
+            {% endif %}
           </div>
         {% endif %}
         <hr>
@@ -25,7 +35,7 @@
           {% elif object.status == 'F' %}
             <div class="alert alert-danger" role="alert">
               Your content has been rejected by system for containing the following material: {{object.label}}
-              <div> <a class="btn btn-success" href="{% url 'request-create' object.id %}">Request manual inspection</a> </div>
+              <a class="btn btn-success text-align-right" href="{% url 'request-create' object.id %}">Request manual inspection</a>
             </div>
           {% elif object.status == 'S' %}
             <div class="alert alert-primary" role="alert">
@@ -51,17 +61,42 @@
         {% endif %}
         {% if user.is_superuser %}
           {% if object.status == 'M' %}
-          <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}">Approve</a>
-            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'request-reject' object.id %}">Reject</a>
-          </div>
+            <div>
+              <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}">Approve</a>
+              <button class="btn btn-danger btn-sm mt-1 mb-1" data-toggle="modal" data-target="#blockForm"> Reject </button>
+            </div>
           {% elif object.status == 'R' %}
             <div class="alert alert-danger" role="alert">
               This content has been rejected for containing the following material: {{object.label}}
+              <div>
+                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Revert </a>
+              </div>
             </div>
           {% elif object.status == 'A' %}
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success d-flex justify-content-between" role="alert">
               This content has been approved and uploaded
+              <button class="btn btn-danger btn-sm text-align-right" data-toggle="modal" data-target="#blockForm"> Block </button>
+            </div>
+          {% elif object.status == 'F' %}
+            <div class="alert alert-danger" role="alert">
+              This content has been rejected by system for containing the following material: {{object.label}}
+              <div>
+                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Revert </a>
+              </div>
+            </div>
+          {% elif object.status == 'S' %}
+            <div class="alert alert-primary" role="alert">
+              This content has been submitted for automatic review
+              <div>
+                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
+              </div>
+            </div>
+          {% elif object.status == 'P' %}
+            <div class="alert alert-warning" role="alert">
+              This content is being reviewed by system
+              <div>
+                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
+              </div>
             </div>
           {% endif %}
         {% endif %}
@@ -87,4 +122,113 @@
       <p class="article-content">{{ object.content }}</p>
     </div>
   </article>
+
+  <!-- Modal Block Video-->
+  <div class="modal fade" id="blockForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel1">Choose video label</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container ">
+            <!-- custom radio button -->
+            <div class="holder">
+                <div class="row mb-1">
+                <div class="col">
+                </div>
+            </div>
+                <form action="{% url 'request-reject' object.id %}" class="customRadio customCheckbox m-0 p-0" id="labelForm1" method="POST">
+                  {% csrf_token %}
+                <div class="row mb-0">
+                <div class="row justify-content-start">
+                    <div class="col-12">
+                    <div class="form-check">
+                        <input type="radio" name="label" id="hentai" class="form-check-input" value="hentai" required>
+                        <label for="hentai" class="form-check-label">Hentai: Animation containing sexually explicit images and plots</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" name="label" id="sexy" class="form-check-input" value="sexy">
+                        <label for="sexy" class="form-check-label">Sexy: Revealing images</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="radio" name="label" id="porn" class="form-check-input" value="porn">
+                      <label for="porn" class="form-check-label">Porn: Sexually explicit images</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="radio" name="label" id="other" class="form-check-input" value="other">
+                      <label for="other" class="form-check-label">Other</label>
+                    </div>
+                    </div>
+                </div>
+                </div> 
+                </form>
+            </div>  
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" form="labelForm1">Submit</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Report Video-->
+  <div class="modal fade" id="reportForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title" id="exampleModalLabel2">Choose video label</h2>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container ">
+            <!-- custom radio button -->
+            <div class="holder">
+                <div class="row mb-1">
+                <div class="col">
+                </div>
+            </div>
+                <form action="{% url 'report-video' object.id %}" class="customRadio customCheckbox m-0 p-0" id="labelForm2" method="POST">
+                  {% csrf_token %}
+                <div class="row mb-0">
+                <div class="row justify-content-start">
+                    <div class="col-12">
+                    <div class="form-check">
+                        <input type="radio" name="label" id="hentai" class="form-check-input" value="hentai" required>
+                        <label for="hentai" class="form-check-label">Hentai: Animation containing sexually explicit images and plots</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" name="label" id="sexy" class="form-check-input" value="sexy">
+                        <label for="sexy" class="form-check-label">Sexy: Revealing images</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="radio" name="label" id="porn" class="form-check-input" value="porn">
+                      <label for="porn" class="form-check-label">Porn: Sexually explicit images</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="radio" name="label" id="other" class="form-check-input" value="other">
+                      <label for="other" class="form-check-label">Other</label>
+                    </div>
+                    </div>
+                </div>
+                </div> 
+                </form>
+            </div>  
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" form="labelForm2">Submit</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
