@@ -89,7 +89,7 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 def ban_user(request, username):
     usr = get_object_or_404(User, username=username)
     user = usr.profile
-    if not user.is_locked:
+    if not user.is_locked and not user.is_superuser:
         user.is_locked = True
         user.save()
     return redirect('/user/{}'.format(username))
@@ -99,7 +99,7 @@ def ban_user(request, username):
 def unban_user(request, username):
     usr = get_object_or_404(User, username=username)
     user = usr.profile
-    if user.is_locked:
+    if user.is_locked and not user.is_superuser:
         user.is_locked = False
         user.save()
     return redirect('/user/{}'.format(username))

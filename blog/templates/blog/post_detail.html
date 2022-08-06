@@ -19,12 +19,26 @@
         {% if object.author != user %}
           <div class="form-group mt-0 pt-0 d-flex justify-content-end">
             {% if user.is_superuser %}
-            <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
+              {% if object.status == 'M' %}
+              <div class="form-group mt-0 pt-0 d-flex justify-content-end">
+                <a class="btn btn-success btn-sm mt-1 mb-1 mr-1 flex-last" href="{% url 'request-approve' object.id %}">Approve</a>
+                <button class="btn btn-danger btn-sm mt-1 mb-1 flex-last" data-toggle="modal" data-target="#blockForm"> Reject </button>
+              </div>
+              {% else %}
+                <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
+              {% endif %}
             {% else %}
+            {% if user.is_authenticated %}
             <button  data-toggle="modal" data-target="#reportForm" class="btn btn-secondary mr-1 flex-last"><i class="fas fa-solid fa-flag"></i> Report</button>
+            {% endif %}
             <a href="{{ object.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
             {% endif %}
           </div>
+        {% else %}
+        <div class="form-group mt-0 pt-0 d-flex justify-content-end">
+          <a class="btn btn-secondary btn-sm mt-1 mb-1 mr-1 flex-last" href="{% url 'post-update' object.id %}">Update</a>
+          <a class="btn btn-danger btn-sm mt-1 mb-1 flex-last" href="{% url 'post-delete' object.id %}">Delete</a>
+        </div>
         {% endif %}
         <hr>
         {% if object.author == user %}
@@ -33,7 +47,7 @@
               Your content has been approved and uploaded
             </div>
           {% elif object.status == 'F' %}
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger d-flex justify-content-between" role="alert">
               Your content has been rejected by system for containing the following material: {{object.label}}
               <a class="btn btn-success text-align-right" href="{% url 'request-create' object.id %}">Request manual inspection</a>
             </div>
@@ -54,22 +68,13 @@
               Your content is being reviewed by system
             </div>
           {% endif %}
-          <div>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
-            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
-          </div>
         {% endif %}
         {% if user.is_superuser %}
-          {% if object.status == 'M' %}
-            <div>
-              <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}">Approve</a>
-              <button class="btn btn-danger btn-sm mt-1 mb-1" data-toggle="modal" data-target="#blockForm"> Reject </button>
-            </div>
-          {% elif object.status == 'R' %}
-            <div class="alert alert-danger" role="alert">
+          {% if object.status == 'R' %}
+            <div class="alert alert-danger d-flex justify-content-between" role="alert">
               This content has been rejected for containing the following material: {{object.label}}
               <div>
-                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Revert </a>
+                <a class="btn btn-success btn-sm text-align-right" href="{% url 'request-approve' object.id %}"> Revert </a>
               </div>
             </div>
           {% elif object.status == 'A' %}
@@ -78,24 +83,24 @@
               <button class="btn btn-danger btn-sm text-align-right" data-toggle="modal" data-target="#blockForm"> Block </button>
             </div>
           {% elif object.status == 'F' %}
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger d-flex justify-content-between" role="alert">
               This content has been rejected by system for containing the following material: {{object.label}}
               <div>
-                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Revert </a>
+                <a class="btn btn-success btn-sm text-align-right" href="{% url 'request-approve' object.id %}"> Revert </a>
               </div>
             </div>
           {% elif object.status == 'S' %}
             <div class="alert alert-primary" role="alert">
               This content has been submitted for automatic review
               <div>
-                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
+                <a class="btn btn-success btn-sm text-align-right" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
               </div>
             </div>
           {% elif object.status == 'P' %}
             <div class="alert alert-warning" role="alert">
               This content is being reviewed by system
               <div>
-                <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
+                <a class="btn btn-success btn-sm text-align-right" href="{% url 'request-approve' object.id %}"> Approve Manually </a>
               </div>
             </div>
           {% endif %}

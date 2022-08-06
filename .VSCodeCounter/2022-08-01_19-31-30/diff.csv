@@ -1,0 +1,14 @@
+"filename", "language", "Python", "HTML", "Database", "Markdown", "comment", "blank", "total"
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\keras_predict.py", "Python", 11, 0, 0, 0, 0, 0, 11
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\about.html", "HTML", 0, -4, 0, 0, 0, -1, -5
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\base.html", "HTML", 0, -1, 0, 0, 0, 0, -1
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\post_detail.html", "HTML", 0, 5, 0, 0, 0, 0, 5
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\post_form.html", "HTML", 0, 5, 0, 0, 0, 0, 5
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\report_detail.html", "HTML", 0, -6, 0, 0, 1, 1, -4
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\user_posts.html", "HTML", 0, 1, 0, 0, 0, 0, 1
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\warning_forbidden.html", "HTML", 0, -4, 0, 0, 0, 0, -4
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\views.py", "Python", 11, 0, 0, 0, 0, 1, 12
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\db.sqlite3", "Database", 0, 0, 96, 0, 0, 1, 97
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\media\Files\README.md", "Markdown", 0, 0, 0, 34, 0, 17, 51
+"c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\media\Files\README_n6eBkgQ.md", "Markdown", 0, 0, 0, 34, 0, 17, 51
+"Total", "-", 22, -4, 96, 68, 1, 36, 219

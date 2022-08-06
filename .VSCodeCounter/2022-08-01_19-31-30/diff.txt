@@ -1,0 +1,44 @@
+Date : 2022-08-01 19:31:30
+Directory : c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app
+Total : 12 files,  182 codes, 1 comments, 36 blanks, all 219 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Database |          1 |         96 |          0 |          1 |         97 |
+| Markdown |          2 |         68 |          0 |         34 |        102 |
+| Python   |          2 |         22 |          0 |          1 |         23 |
+| HTML     |          7 |         -4 |          1 |          0 |         -3 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                             | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                |         12 |        182 |          1 |         36 |        219 |
+| blog                                                                                                                             |          9 |         18 |          1 |          1 |         20 |
+| blog\templates                                                                                                                   |          7 |         -4 |          1 |          0 |         -3 |
+| blog\templates\blog                                                                                                              |          7 |         -4 |          1 |          0 |         -3 |
+| media                                                                                                                            |          2 |         68 |          0 |         34 |        102 |
+| media\Files                                                                                                                      |          2 |         68 |          0 |         34 |        102 |
++----------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                         | language | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\keras_predict.py                      | Python   |         11 |          0 |          0 |         11 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\about.html             | HTML     |         -4 |          0 |         -1 |         -5 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\base.html              | HTML     |         -1 |          0 |          0 |         -1 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\post_detail.html       | HTML     |          5 |          0 |          0 |          5 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\post_form.html         | HTML     |          5 |          0 |          0 |          5 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\report_detail.html     | HTML     |         -6 |          1 |          1 |         -4 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\user_posts.html        | HTML     |          1 |          0 |          0 |          1 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\templates\blog\warning_forbidden.html | HTML     |         -4 |          0 |          0 |         -4 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\blog\views.py                              | Python   |         11 |          0 |          1 |         12 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\db.sqlite3                                 | Database |         96 |          0 |          1 |         97 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\media\Files\README.md                      | Markdown |         34 |          0 |         17 |         51 |
+| c:\Users\admin\Desktop\Projects\Project_Final\Sample Web\Django-WebApp\django_web_app\media\Files\README_n6eBkgQ.md              | Markdown |         34 |          0 |         17 |         51 |
+| Total                                                                                                                            |          |        182 |          1 |         36 |        219 |
++----------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

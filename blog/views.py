@@ -1,3 +1,4 @@
+import os
 from compat import render_to_string
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse
@@ -19,6 +20,7 @@ from django.urls import reverse_lazy
 from django.contrib.staticfiles.views import serve
 from background_task import background
 from .keras_predict import predict_video
+from .keras_predict import exts
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -35,7 +37,7 @@ def search(request):
 
     query=request.GET.get('q')
 
-    result=Post.objects.filter(Q(title__icontains=query) | Q(author__username__icontains=query) | Q(content__icontains=query))
+    result=Post.objects.filter(Q(title__icontains=query) | Q(author__username__icontains=query) | Q(content__icontains=query), status='A')
     paginate_by=2
     context={ 'posts':result }
     return render(request,template,context)
@@ -165,7 +167,7 @@ class ReportListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        return Post.objects.filter(status='A', report__status='S').order_by('-date_posted')
+        return Post.objects.filter(status='A', report__status='S').order_by('-date_posted').distinct()
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -203,6 +205,13 @@ class UserPostListView(ListView):
         else:
             return Post.objects.filter(author=user, status='A').order_by('-date_posted')
 
+    def get_context_data(self, **kwargs):
+        context = super(UserPostListView, self).get_context_data(**kwargs)
+        context.update({
+            'author': get_object_or_404(User, username=self.kwargs.get('username')),
+        })
+        return context
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -214,8 +223,11 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     fields = ['title', 'content', 'file']
 
     def form_valid(self, form):
+        file, ext = os.path.splitext(form.instance.file.path)
         if self.request.user.profile.is_locked:
-            return render(self.request, 'blog/warning_forbidden.html')
+            return render(self.request, 'blog/post_form.html', {'message':'You are currently banned from posting','form':form})
+        elif ext not in exts:
+            return render(self.request, 'blog/post_form.html', {'message':'Please upload a video or image file','form':form})
         form.instance.author = self.request.user
         response = super().form_valid(form)
         process_video(form.instance.id, form.instance.file.path)

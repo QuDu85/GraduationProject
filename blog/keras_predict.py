@@ -1,16 +1,25 @@
 from collections import deque
+from distutils import extension
 from pathlib import Path
 import keras
 import numpy as np
 import PIL
 import cv2
+import os
 
 image_size = (299,299)
 window_size = 3
-model_path = "C:\\Users\\admin\\Desktop\\Projects\\Project_Final\\Model\\nsfw.299x299.h5" 
+exts = ['.mp4','.ts','.jpg','.jpeg','.png','.avi']
+model_file = "C:\\Users\\admin\\Desktop\\Projects\\Project_Final\\Sample Web\\Django-WebApp\\django_web_app\\blog\\nsfw.299x299.h5" 
+weights_file = "C:\\Users\\admin\\Desktop\\Projects\\Project_Final\\Sample Web\\Django-WebApp\\django_web_app\\blog\\weights.best_inception299.hdf5"
 lb = ['drawings', 'hentai', 'neutral', 'porn', 'sexy']
 
 def predict_video(video):
+    file, ext = os.path.splitext(video)
+    print(ext)
+    if ext not in exts:
+        print("Not a video:",video)
+        return None, 'Invalid' 
     label = None
     safe = True
     total_per_label = [0,0,0,0]
@@ -22,7 +31,13 @@ def predict_video(video):
     Q = deque(maxlen=window_size)
 
     print("Loading model")
-    model = keras.models.load_model(model_path)
+    model = keras.models.load_model(model_file)
+    
+
+    # Load checkpoint if one is found
+    if os.path.exists(weights_file):
+        print ("loading ", weights_file)
+        model.load_weights(weights_file)
 
     # loop over frames from the video file stream
     while True:
@@ -43,14 +58,18 @@ def predict_video(video):
         
         # make predictions on the frame and then update the predictions
         # queue
-        preds = model.predict(np.expand_dims(frame, axis=0))[0]
+        try:
+            preds = model.predict(np.expand_dims(frame, axis=0))[0]
+        except:
+            print("Error processin: ",video)
+            return False, 'Unknown'
         Q.append(preds)
 
         # perform prediction averaging over the current history of
         # previous predictions
         results = np.array(Q).mean(axis=0)
         i = np.argmax(results)
-        if i!=0 and i!=2 and start>=window_size:
+        if i!=0 and i!=2:
             safe = False
             label = lb[i]
             break

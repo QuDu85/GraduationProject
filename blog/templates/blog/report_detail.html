@@ -17,58 +17,33 @@
         <small class="text-muted  text-align-right">{{ post.date_posted }}</small>
         </div>
         <div class="form-group mt-0 pt-0 d-flex justify-content-end"> 
-            <a href="{{ post.file.url }}" download class="btn btn-primary flex-last" type="submit"><i class="fas fa-download"></i> Download</a>
+            {% if post.status == 'A' %}
+            <button class="btn btn-danger btn-sm mt-1 mb-1 mr-1 flex-last" data-toggle="modal" data-target="#blockForm"> Block </button>
+            {% elif post.status == 'F' %}
+            <a class="btn btn-success btn-sm mt-1 mb-1 mr-1 flex-last" href="{% url 'request-approve' post.id %}"> Unblock </a>
+            {% endif %}
+            <button class="btn btn-success btn-sm mt-1 mb-1 flex-last" data-toggle="modal" data-target="#deleteForm"> Remove all reports </button>
           </div>
         <hr>
         <div class="alert alert-danger" role="alert">
-        {% for report in reports %}
-            Reported by {{ report.reporter }} for containing {{ report.label }} material
-        {% endfor %}
-          <div class="d-flex justify-content-end">
-          <a class="btn btn-success btn-sm mt-1 mb-1 flex-last" href="{% url 'request-approve' post.id %}"> Remove all reports </a>
+        {% if reports %}
+          {% for report in reports %}
+              <div>Reported by {{ report.reporter }} for containing {{ report.label }} material</div>
+          {% endfor %}
+          {% if is_paginated %}
+          <div class="d-flex justify-content-end"> 
+            {% if page_obj.has_previous %}
+              <a class="btn btn-light mr-1 flex-last" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-solid fa-angle-left"></i></a>
+            {% endif %}
+            {% if page_obj.has_next %}
+              <a class="btn btn-light flex-last" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-solid fa-angle-right"></i></a>
+            {% endif %}
           </div>
-        </div>
-        {% if post.status == 'M' %}
-        <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' post.id %}">Approve</a>
-            <button class="btn btn-danger btn-sm mt-1 mb-1" data-toggle="modal" data-target="#blockForm"> Reject </button>
-        </div>
-        {% elif post.status == 'R' %}
-        <div class="alert alert-danger" role="alert">
-            This content has been rejected for containing the following material: {{post.label}}
-            <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' post.id %}"> Revert </a>
-            </div>
-        </div>
-        {% elif post.status == 'A' %}
-        <div class="alert alert-success" role="alert">
-            This content has been approved and uploaded
-            <div>
-            <button class="btn btn-danger btn-sm mt-1 mb-1" data-toggle="modal" data-target="#blockForm"> Block </button>
-            </div>
-        </div>
-        {% elif post.status == 'F' %}
-        <div class="alert alert-danger" role="alert">
-            This content has been rejected by system for containing the following material: {{post.label}}
-            <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' post.id %}"> Revert </a>
-            </div>
-        </div>
-        {% elif post.status == 'S' %}
-        <div class="alert alert-primary" role="alert">
-            This content has been submitted for automatic review
-            <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' post.id %}"> Approve Manually </a>
-            </div>
-        </div>
-        {% elif post.status == 'P' %}
-        <div class="alert alert-warning" role="alert">
-            This content is being reviewed by system
-            <div>
-            <a class="btn btn-success btn-sm mt-1 mb-1" href="{% url 'request-approve' post.id %}"> Approve Manually </a>
-            </div>
-        </div>
+          {% endif %}
+        {% else %}
+            No report found
         {% endif %}
+        </div>
       </div>
       <div>
         {% if post.file %}
@@ -139,8 +114,29 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary" form="labelForm1">Submit</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Delete Report Video-->
+  <div class="modal fade" id="deleteForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalLabel1">Are you sure you want to delete all reports of this post?</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url 'report-delete' post.id %}" id="confirmForm">
+            {% csrf_token %}
+          </form>
+        <button type="submit" class="btn btn-primary" form="confirmForm">Confirm</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         </div>
       </div>
     </div>
